@@ -17,3 +17,7 @@ func New() Handler {
 func (h *Handler) MainPage(c echo.Context) error {
 	return c.JSON(http.StatusOK, fmt.Sprintf("{hello: here}"))
 }
+
+func (h *Handler) List(c echo.Context) error {
+	return c.JSON(http.StatusOK, fmt.Sprintf("list of all movies"))
+}

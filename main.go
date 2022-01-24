@@ -13,6 +13,8 @@ func main() {
 	fmt.Println("Starting server ...")
 
 	s.GET("/", h.MainPage)
+	s.GET("/movies", h.List)
+
 	err := s.Start("0.0.0.0:8080")
 	if err != nil {
 		fmt.Println("Error starting server.")
