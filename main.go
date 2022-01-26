@@ -12,6 +12,9 @@ func main() {
 	var h = handler.New()
 
 	// Public group
+	e.GET("/comments", h.GetComments)
+	e.GET("/movies", h.GetMovies)
+	e.GET("/movie/:movieID", h.GetAMovie)
 
 	// Users group
 	userGroup := e.Group("/user")
