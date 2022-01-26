@@ -11,6 +11,14 @@ func main() {
 	var e = echo.New()
 	var h = handler.New()
 
+	// Public group
+
+	// Users group
+	userGroup := e.Group("/user")
+
+	userGroup.POST("/vote", h.Vote)
+	userGroup.POST("/comment", h.Comment)
+
 	// Admin group
 	adminGroup := e.Group("/admin")
 	adminGroup.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
@@ -20,8 +28,8 @@ func main() {
 	adminGroup.POST("/movie", h.PostMovie)
 	adminGroup.PUT("/movie/:movieID", h.UpdateMovie)
 	adminGroup.DELETE("/movie/:movieID", h.DeleteMovie)
-	adminGroup.PUT("/admin/comment/:commentID", h.UpdateComment)
-	adminGroup.DELETE("/admin/comment/:commentID", h.DeleteComment)
+	adminGroup.PUT("/comment/:commentID", h.UpdateComment)
+	adminGroup.DELETE("/comment/:commentID", h.DeleteComment)
 
 	e.GET("/", h.MainPage)
 	e.GET("/list", h.List)
