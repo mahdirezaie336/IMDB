@@ -4,10 +4,6 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func New() Handler {
-	return Handler{}
-}
-
 func (h *Handler) PostMovie(c echo.Context) error {
 	return nil
 }

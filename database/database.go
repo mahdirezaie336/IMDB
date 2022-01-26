@@ -17,3 +17,7 @@ func New(address string) (Database, error) {
 		address: address,
 	}, nil
 }
+
+func (d *Database) Close() error {
+	return d.db.Close()
+}
