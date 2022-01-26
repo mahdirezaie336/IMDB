@@ -15,6 +15,7 @@ func main() {
 	e.GET("/comments", h.GetComments)
 	e.GET("/movies", h.GetMovies)
 	e.GET("/movie/:movieID", h.GetAMovie)
+	e.GET("/", h.MainPage)
 
 	// Users group
 	userGroup := e.Group("/user")
@@ -33,9 +34,6 @@ func main() {
 	adminGroup.DELETE("/movie/:movieID", h.DeleteMovie)
 	adminGroup.PUT("/comment/:commentID", h.UpdateComment)
 	adminGroup.DELETE("/comment/:commentID", h.DeleteComment)
-
-	e.GET("/", h.MainPage)
-	e.GET("/list", h.List)
 
 	err := e.Start("0.0.0.0:8080")
 	if err != nil {
