@@ -15,6 +15,9 @@ func main() {
 	adminGroup.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
 		Format: `[${time_rfc3339}] ${status} ${method} ${host}${path} ${latency_human}` + "\n",
 	}))
+	adminGroup.Use(middleware.BasicAuth(func(username string, password string, c echo.Context) (bool, error) {
+		return username == "admin" && password == "admin", nil
+	}))
 
 	adminGroup.GET("/main", h.MainPage)
 
