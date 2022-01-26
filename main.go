@@ -15,15 +15,13 @@ func main() {
 	adminGroup.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
 		Format: `[${time_rfc3339}] ${status} ${method} ${host}${path} ${latency_human}` + "\n",
 	}))
-	adminGroup.Use(middleware.BasicAuth(func(username string, password string, c echo.Context) (bool, error) {
-		return username == "admin" && password == "admin", nil
-	}))
 
-	adminGroup.GET("/main", h.MainPage)
+	adminGroup.POST("/movie", h.PostMovie)           // Insert new movie
+	adminGroup.PUT("/movie/:movieID", h.UpdateMovie) // Update a movie
+	adminGroup.DELETE("/movie/:movieID", h.DeleteMovie)
 
 	e.GET("/", h.MainPage)
 	e.GET("/list", h.List)
-	e.POST("/cats", h.Cats)
 
 	err := e.Start("0.0.0.0:8080")
 	if err != nil {
