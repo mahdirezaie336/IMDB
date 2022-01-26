@@ -11,14 +11,17 @@ func main() {
 	var e = echo.New()
 	var h = handler.New()
 
+	// Admin group
 	adminGroup := e.Group("/admin")
 	adminGroup.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
 		Format: `[${time_rfc3339}] ${status} ${method} ${host}${path} ${latency_human}` + "\n",
 	}))
 
-	adminGroup.POST("/movie", h.PostMovie)           // Insert new movie
-	adminGroup.PUT("/movie/:movieID", h.UpdateMovie) // Update a movie
+	adminGroup.POST("/movie", h.PostMovie)
+	adminGroup.PUT("/movie/:movieID", h.UpdateMovie)
 	adminGroup.DELETE("/movie/:movieID", h.DeleteMovie)
+	adminGroup.PUT("/admin/comment/:commentID", h.UpdateComment)
+	adminGroup.DELETE("/admin/comment/:commentID", h.DeleteComment)
 
 	e.GET("/", h.MainPage)
 	e.GET("/list", h.List)

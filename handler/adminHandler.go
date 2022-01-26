@@ -33,3 +33,11 @@ func (h *Handler) UpdateMovie(c echo.Context) error {
 func (h *Handler) DeleteMovie(c echo.Context) error {
 	return nil
 }
+
+func (h *Handler) UpdateComment(c echo.Context) error {
+	return nil
+}
+
+func (h *Handler) DeleteComment(c echo.Context) error {
+	return nil
+}
