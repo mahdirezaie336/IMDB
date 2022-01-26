@@ -9,7 +9,13 @@ import (
 
 func main() {
 	var e = echo.New()
-	var h = handler.New()
+	var h, err = handler.New()
+
+	if err != nil {
+		panic(err)
+	}
+
+	defer h.Close()
 
 	// Public group
 	e.GET("/comments", h.GetComments)
@@ -35,7 +41,7 @@ func main() {
 	adminGroup.PUT("/comment/:commentID", h.UpdateComment)
 	adminGroup.DELETE("/comment/:commentID", h.DeleteComment)
 
-	err := e.Start("0.0.0.0:8080")
+	err = e.Start("0.0.0.0:8080")
 	if err != nil {
 		fmt.Println("Problem starting server")
 	}
