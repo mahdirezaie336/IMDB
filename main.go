@@ -3,20 +3,27 @@ package main
 import (
 	"fmt"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"github.com/mahdirezaie336/IMDB/handler"
 )
 
 func main() {
-	var s = echo.New()
+	var e = echo.New()
 	var h = handler.New()
 
-	fmt.Println("Starting server ...")
+	adminGroup := e.Group("/admin")
+	adminGroup.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+		Format: `[${time_rfc3339}] ${status} ${method} ${host}${path} ${latency_human}` + "\n",
+	}))
 
-	s.GET("/", h.MainPage)
-	s.GET("/movies", h.List)
+	adminGroup.GET("/main", h.MainPage)
 
-	err := s.Start("0.0.0.0:8080")
+	e.GET("/", h.MainPage)
+	e.GET("/list", h.List)
+	e.POST("/cats", h.Cats)
+
+	err := e.Start("0.0.0.0:8080")
 	if err != nil {
-		fmt.Println("Error starting server.")
+		fmt.Println("Problem starting server")
 	}
 }
