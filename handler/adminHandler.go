@@ -94,5 +94,20 @@ func (h *Handler) UpdateComment(c echo.Context) error {
 }
 
 func (h *Handler) DeleteComment(c echo.Context) error {
-	return nil
+	commentId := c.Param("commentID")
+	rows, err := h.db.Query(fmt.Sprintf("select id from comments where id=%s and deleted_at is null", commentId))
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, makeResponse("server-error"))
+	}
+
+	if !rows.Next() {
+		return c.JSON(http.StatusBadRequest, makeResponse("id-not-found"))
+	}
+
+	_, err = h.db.Query(fmt.Sprintf("update comments set deleted_at=now() where id=%s", commentId))
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, makeResponse("server-error"))
+	}
+
+	return c.JSON(http.StatusOK, makeResponse("ok"))
 }
