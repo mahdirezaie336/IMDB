@@ -9,12 +9,18 @@ import (
 
 func (h *Handler) PostMovie(c echo.Context) error {
 	movie := new(model.Movie)
+
 	err := c.Bind(&movie)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, makeResponse("bad-request"))
 	}
-	h.db.Query(fmt.Sprintf("insert into movies (name, description) values ()"))
-	return nil
+
+	_, err = h.db.Query(fmt.Sprintf("insert into movies (name, description) values (%s, %s)", movie.Name, movie.Description))
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, makeResponse("server-error"))
+	}
+
+	return c.JSON(http.StatusOK, makeResponse("ok"))
 }
 
 func (h *Handler) UpdateMovie(c echo.Context) error {
