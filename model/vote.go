@@ -1,8 +1,8 @@
 package model
 
 type Vote struct {
-	id      int64
-	user    User
-	rating  float64
-	movieID int
+	Id      int64   `json:"id"`
+	User    User    `json:"user"`
+	Rating  float64 `json:"rating"`
+	MovieID int     `json:"movie_id"`
 }

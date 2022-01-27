@@ -6,14 +6,14 @@ import (
 )
 
 type Comment struct {
-	id        int64
-	user      User
-	comment   string
-	approved  bool
-	createdAt time.Time
-	movieID   int
+	Id        int64     `json:"id"`
+	User      User      `json:"user"`
+	Comment   string    `json:"comment"`
+	Approved  bool      `json:"approved"`
+	CreatedAt time.Time `json:"created_at"`
+	MovieID   int       `json:"movie_id"`
 }
 
 func (c *Comment) String() string {
-	return fmt.Sprint(c.comment, ":", c.createdAt)
+	return fmt.Sprint(c.Comment, ":", c.CreatedAt)
 }
