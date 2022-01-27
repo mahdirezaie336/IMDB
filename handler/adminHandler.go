@@ -69,7 +69,28 @@ func (h *Handler) DeleteMovie(c echo.Context) error {
 }
 
 func (h *Handler) UpdateComment(c echo.Context) error {
-	return nil
+	comment := model.Comment{}
+	err := c.Bind(&comment)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, makeResponse("bad-request"))
+	}
+
+	commentID := c.Param("commentID")
+	rows, err := h.db.Query(fmt.Sprintf("select id from comments where id = %s and deleted_at is null", commentID))
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, makeResponse("server-error"))
+	}
+
+	if !rows.Next() {
+		return c.JSON(http.StatusBadRequest, makeResponse("bad-request"))
+	}
+
+	_, err = h.db.Query(fmt.Sprintf("update comments set approved=%v where id=%s", comment.Approved, commentID))
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, makeResponse("server-error"))
+	}
+
+	return c.JSON(http.StatusOK, makeResponse("ok"))
 }
 
 func (h *Handler) DeleteComment(c echo.Context) error {
