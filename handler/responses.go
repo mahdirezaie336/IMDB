@@ -17,6 +17,11 @@ func makeResponse(s string) map[string]string {
 			"message": "OK",
 		}
 
+	case "id-not-found":
+		return map[string]string{
+			"message": "ID Not Found",
+		}
+
 	default:
 		return map[string]string{}
 	}
