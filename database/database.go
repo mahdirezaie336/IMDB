@@ -3,7 +3,7 @@ package database
 import "database/sql"
 
 type Database struct {
-	db      *sql.DB
+	mariadb *sql.DB
 	address string
 }
 
@@ -13,11 +13,15 @@ func New(address string) (Database, error) {
 		return Database{}, err
 	}
 	return Database{
-		db:      db,
+		mariadb: db,
 		address: address,
 	}, nil
 }
 
 func (d *Database) Close() error {
-	return d.db.Close()
+	return d.mariadb.Close()
+}
+
+func (d *Database) Query(s string) (*sql.Rows, error) {
+	return d.mariadb.Query(s)
 }
