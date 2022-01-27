@@ -8,7 +8,7 @@ import (
 )
 
 func (h *Handler) PostMovie(c echo.Context) error {
-	movie := new(model.Movie)
+	movie := model.Movie{}
 
 	err := c.Bind(&movie)
 	if err != nil {
@@ -24,7 +24,20 @@ func (h *Handler) PostMovie(c echo.Context) error {
 }
 
 func (h *Handler) UpdateMovie(c echo.Context) error {
-	return nil
+	movie := model.Movie{}
+
+	err := c.Bind(&movie)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, makeResponse("bad-request"))
+	}
+
+	movieID := c.Param("movieID")
+	_, err = h.db.Query(fmt.Sprintf("select id from movies where id = %s and deleted_at is null", movieID))
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, makeResponse("server-error"))
+	}
+
+	return c.JSON(http.StatusOK, makeResponse("ok"))
 }
 
 func (h *Handler) DeleteMovie(c echo.Context) error {
