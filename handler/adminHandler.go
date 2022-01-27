@@ -56,7 +56,7 @@ func (h *Handler) UpdateMovie(c echo.Context) error {
 
 func (h *Handler) DeleteMovie(c echo.Context) error {
 	movieID := c.Param("movieID")
-	rows, err := h.db.Mariadb.Query("select id from comments where id=? and deleted_at is null", movieID)
+	rows, err := h.db.Mariadb.Query("select id from movies where id=? and deleted_at is null", movieID)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, makeResponse("server-error"))
 	}
@@ -65,7 +65,7 @@ func (h *Handler) DeleteMovie(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, makeResponse("id-not-found"))
 	}
 
-	_, err = h.db.Mariadb.Query("update comments set deleted_at=now() where id=?", movieID)
+	_, err = h.db.Mariadb.Query("update movies set deleted_at=now() where id=?", movieID)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, makeResponse("server-error"))
 	}
