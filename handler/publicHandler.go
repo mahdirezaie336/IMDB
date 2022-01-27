@@ -2,16 +2,16 @@ package handler
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/mahdirezaie336/IMDB/database"
+	"github.com/mahdirezaie336/IMDB/databases"
 	"net/http"
 )
 
 type Handler struct {
-	db database.Database
+	db databases.Database
 }
 
 func New() (Handler, error) {
-	db, err := database.New("root@tcp(172.17.0.2:3306)/imdb")
+	db, err := databases.New("root@tcp(172.17.0.2:3306)/imdb")
 	if err != nil {
 		return Handler{}, err
 	}

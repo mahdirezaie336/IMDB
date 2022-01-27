@@ -1,6 +1,9 @@
-package database
+package databases
 
-import "database/sql"
+import (
+	"database/sql"
+	_ "github.com/go-sql-driver/mysql"
+)
 
 type Database struct {
 	mariadb *sql.DB
