@@ -11,7 +11,7 @@ type Handler struct {
 }
 
 func New() (Handler, error) {
-	db, err := database.New("root@172.17.0.2:3306")
+	db, err := database.New("root@tcp(172.17.0.2:3306)/imdb")
 	if err != nil {
 		return Handler{}, err
 	}

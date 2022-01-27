@@ -8,7 +8,7 @@ type Database struct {
 }
 
 func New(address string) (Database, error) {
-	db, err := sql.Open("mysql", "root@tcp(172.17.0.2:3306)/imdb")
+	db, err := sql.Open("mysql", address)
 	if err != nil {
 		return Database{}, err
 	}
