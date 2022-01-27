@@ -6,7 +6,7 @@ import (
 )
 
 type Database struct {
-	mariadb *sql.DB
+	Mariadb *sql.DB
 	address string
 }
 
@@ -16,15 +16,15 @@ func New(address string) (Database, error) {
 		return Database{}, err
 	}
 	return Database{
-		mariadb: db,
+		Mariadb: db,
 		address: address,
 	}, nil
 }
 
 func (d *Database) Close() error {
-	return d.mariadb.Close()
+	return d.Mariadb.Close()
 }
 
-func (d *Database) Query(s string) (*sql.Rows, error) {
-	return d.mariadb.Query(s)
+func (d *Database) Query(s string, args ...interface{}) (*sql.Rows, error) {
+	return d.Mariadb.Query(s, args)
 }
