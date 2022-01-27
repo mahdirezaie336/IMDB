@@ -51,11 +51,21 @@ func (h *Handler) UpdateMovie(c echo.Context) error {
 
 func (h *Handler) DeleteMovie(c echo.Context) error {
 	movieID := c.Param("movieID")
-	_, err := h.db.Query(fmt.Sprintf("", movieID))
+	rows, err := h.db.Query(fmt.Sprintf("select id from comments where id=%s and deleted_at is null", movieID))
 	if err != nil {
-
+		return c.JSON(http.StatusInternalServerError, makeResponse("server-error"))
 	}
-	return nil
+
+	if !rows.Next() {
+		return c.JSON(http.StatusBadRequest, makeResponse("id-not-found"))
+	}
+
+	_, err = h.db.Query(fmt.Sprintf("update comments set deleted_at=now() where id=%s", movieID))
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, makeResponse("server-error"))
+	}
+
+	return c.JSON(http.StatusOK, makeResponse("ok"))
 }
 
 func (h *Handler) UpdateComment(c echo.Context) error {
