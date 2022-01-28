@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/mahdirezaie336/IMDB/auth"
 	"github.com/mahdirezaie336/IMDB/handler"
 )
 
@@ -17,6 +18,11 @@ func main() {
 
 	defer h.Close()
 
+	// Logger
+	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+		Format: `[${time_rfc3339}] ${status} ${method} ${host}${path} ${latency_human}` + "\n",
+	}))
+
 	// Public group
 	e.GET("/comments", h.GetComments)
 	e.GET("/movies", h.GetMovies)
@@ -25,14 +31,21 @@ func main() {
 
 	// Users group
 	userGroup := e.Group("/user")
+	userGroup.Use(middleware.JWTWithConfig(middleware.JWTConfig{
+		Claims:        &auth.JWTClaims{},
+		SigningMethod: "HS256",
+		SigningKey:    []byte("userSecret"),
+	}))
 
 	userGroup.POST("/vote", h.Vote)
 	userGroup.POST("/comment", h.Comment)
 
 	// Admin group
 	adminGroup := e.Group("/admin")
-	adminGroup.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
-		Format: `[${time_rfc3339}] ${status} ${method} ${host}${path} ${latency_human}` + "\n",
+	adminGroup.Use(middleware.JWTWithConfig(middleware.JWTConfig{
+		Claims:        &auth.JWTClaims{},
+		SigningMethod: "HS256",
+		SigningKey:    []byte("adminSecret"),
 	}))
 
 	adminGroup.POST("/movie", h.PostMovie)
