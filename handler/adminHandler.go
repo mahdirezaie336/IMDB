@@ -58,6 +58,7 @@ func (h *Handler) DeleteMovie(c echo.Context) error {
 	movieID := c.Param("movieID")
 	rows, err := h.db.Mariadb.Query("select id from movies where id=? and deleted_at is null", movieID)
 	if err != nil {
+		fmt.Println(err)
 		return c.JSON(http.StatusInternalServerError, makeResponse("server-error"))
 	}
 
@@ -67,6 +68,7 @@ func (h *Handler) DeleteMovie(c echo.Context) error {
 
 	_, err = h.db.Mariadb.Query("update movies set deleted_at=now() where id=?", movieID)
 	if err != nil {
+		fmt.Println(err)
 		return c.JSON(http.StatusInternalServerError, makeResponse("server-error"))
 	}
 
@@ -77,12 +79,14 @@ func (h *Handler) UpdateComment(c echo.Context) error {
 	comment := model.Comment{}
 	err := c.Bind(&comment)
 	if err != nil {
+		fmt.Println(err)
 		return c.JSON(http.StatusBadRequest, makeResponse("bad-request"))
 	}
 
 	commentID := c.Param("commentID")
 	rows, err := h.db.Mariadb.Query("select id from comments where id = ? and deleted_at is null", commentID)
 	if err != nil {
+		fmt.Println(err)
 		return c.JSON(http.StatusInternalServerError, makeResponse("server-error"))
 	}
 
@@ -92,6 +96,7 @@ func (h *Handler) UpdateComment(c echo.Context) error {
 
 	_, err = h.db.Mariadb.Query("update comments set approved=? where id=?", comment.Approved, commentID)
 	if err != nil {
+		fmt.Println(err)
 		return c.JSON(http.StatusInternalServerError, makeResponse("server-error"))
 	}
 
@@ -102,6 +107,7 @@ func (h *Handler) DeleteComment(c echo.Context) error {
 	commentId := c.Param("commentID")
 	rows, err := h.db.Mariadb.Query("select id from comments where id=? and deleted_at is null", commentId)
 	if err != nil {
+		fmt.Println(err)
 		return c.JSON(http.StatusInternalServerError, makeResponse("server-error"))
 	}
 
@@ -111,6 +117,7 @@ func (h *Handler) DeleteComment(c echo.Context) error {
 
 	_, err = h.db.Mariadb.Query("update comments set deleted_at=now() where id=?", commentId)
 	if err != nil {
+		fmt.Println(err)
 		return c.JSON(http.StatusInternalServerError, makeResponse("server-error"))
 	}
 

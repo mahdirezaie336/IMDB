@@ -16,6 +16,7 @@ type Handler struct {
 func New() (Handler, error) {
 	db, err := databases.New("root:toor@tcp(172.17.0.2:3306)/imdb")
 	if err != nil {
+		fmt.Println(err)
 		return Handler{}, err
 	}
 	return Handler{
@@ -36,6 +37,7 @@ func (h *Handler) GetComments(c echo.Context) error {
 	rows, err := h.db.Mariadb.Query("select id, name, description, rating from movies where id = ? and "+
 		"deleted_at is null", movieId)
 	if err != nil {
+		fmt.Println(err)
 		return c.JSON(http.StatusInternalServerError, makeResponse("server-error"))
 	}
 
@@ -46,6 +48,7 @@ func (h *Handler) GetComments(c echo.Context) error {
 	movie := model.Movie{}
 	err = rows.Scan(&(movie.Id), &(movie.Name), &(movie.Description), &(movie.Rating))
 	if err != nil {
+		fmt.Println(err)
 		return c.JSON(http.StatusInternalServerError, makeResponse("server-error"))
 	}
 
@@ -53,6 +56,7 @@ func (h *Handler) GetComments(c echo.Context) error {
 	rows, err = h.db.Mariadb.Query("select c.id, c.comment, u.username from comments as c join users as u on "+
 		"c.userID = u.id where movieID = ? and c.approved is true", movieId)
 	if err != nil {
+		fmt.Println(err)
 		return c.JSON(http.StatusInternalServerError, makeResponse("server-error"))
 	}
 	for rows.Next() {
@@ -83,6 +87,7 @@ func (h *Handler) GetMovies(c echo.Context) error {
 		movie := model.Movie{}
 		err := rows.Scan(&(movie.Id), &(movie.Name), &(movie.Description), &(movie.Rating))
 		if err != nil {
+			fmt.Println(err)
 			return c.JSON(http.StatusInternalServerError, makeResponse("server-error"))
 		}
 		allMovies = append(allMovies, movie)

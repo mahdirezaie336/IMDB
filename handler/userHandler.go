@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo/v4"
 	"github.com/mahdirezaie336/IMDB/auth"
@@ -12,6 +13,7 @@ func (h *Handler) Vote(c echo.Context) error {
 	vote := model.Vote{}
 	err := c.Bind(&vote)
 	if err != nil {
+		fmt.Println(err)
 		return c.JSON(http.StatusBadRequest, makeResponse("bad-request"))
 	}
 
@@ -19,6 +21,7 @@ func (h *Handler) Vote(c echo.Context) error {
 	rating := vote.Rating
 	rows, err := h.db.Mariadb.Query("select id from movies where id = ? and deleted_at is null", movieId)
 	if err != nil {
+		fmt.Println(err)
 		return c.JSON(http.StatusInternalServerError, makeResponse("server-error"))
 	}
 
@@ -28,6 +31,7 @@ func (h *Handler) Vote(c echo.Context) error {
 
 	_, err = h.db.Mariadb.Query("update movies set rating = rating + ? where id = ?", rating, movieId)
 	if err != nil {
+		fmt.Println(err)
 		return c.JSON(http.StatusInternalServerError, makeResponse("server-error"))
 	}
 
@@ -38,12 +42,14 @@ func (h *Handler) Comment(c echo.Context) error {
 	comment := model.Comment{}
 	err := c.Bind(comment)
 	if err != nil {
+		fmt.Println(err)
 		return c.JSON(http.StatusBadRequest, makeResponse("bad-request"))
 	}
 
 	movieId := comment.MovieID
 	rows, err := h.db.Mariadb.Query("select id from movies where id = ? and deleted_at is null", movieId)
 	if err != nil {
+		fmt.Println(err)
 		return c.JSON(http.StatusInternalServerError, makeResponse("server-error"))
 	}
 
@@ -56,6 +62,7 @@ func (h *Handler) Comment(c echo.Context) error {
 	_, err = h.db.Mariadb.Query("insert into comments (comment, movieID, claims.UserId) values (?, ?, ?)",
 		comment.CommentBody, comment.MovieID, claims.UserId)
 	if err != nil {
+		fmt.Println(err)
 		return c.JSON(http.StatusInternalServerError, makeResponse("server-error"))
 	}
 
