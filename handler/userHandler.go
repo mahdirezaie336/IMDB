@@ -15,7 +15,9 @@ func (h *Handler) Vote(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, makeResponse("bad-request"))
 	}
 
-	rows, err := h.db.Mariadb.Query("select id from movies where id = ? and deleted_at is null", vote.MovieID)
+	movieId := vote.MovieID
+	rating := vote.Rating
+	rows, err := h.db.Mariadb.Query("select id from movies where id = ? and deleted_at is null", movieId)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, makeResponse("server-error"))
 	}
@@ -24,7 +26,7 @@ func (h *Handler) Vote(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, makeResponse("id-not-found"))
 	}
 
-	_, err = h.db.Mariadb.Query("update movies set rating = rating + ? where id = ?", vote.Rating, vote.MovieID)
+	_, err = h.db.Mariadb.Query("update movies set rating = rating + ? where id = ?", rating, movieId)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, makeResponse("server-error"))
 	}
@@ -39,7 +41,8 @@ func (h *Handler) Comment(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, makeResponse("bad-request"))
 	}
 
-	rows, err := h.db.Mariadb.Query("select id from movies where id = ? and deleted_at is null", comment.MovieID)
+	movieId := comment.MovieID
+	rows, err := h.db.Mariadb.Query("select id from movies where id = ? and deleted_at is null", movieId)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, makeResponse("server-error"))
 	}
@@ -50,9 +53,8 @@ func (h *Handler) Comment(c echo.Context) error {
 
 	user := c.Get("user").(*jwt.Token)
 	claims := user.Claims.(*auth.JWTClaims)
-	userId := claims.UserId
-	_, err = h.db.Mariadb.Query("insert into comments (comment, movieID, userID) values (?, ?, ?)",
-		comment.CommentBody, comment.MovieID, userId)
+	_, err = h.db.Mariadb.Query("insert into comments (comment, movieID, claims.UserId) values (?, ?, ?)",
+		comment.CommentBody, comment.MovieID, claims.UserId)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, makeResponse("server-error"))
 	}

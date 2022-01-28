@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/labstack/echo/v4"
 	"github.com/mahdirezaie336/IMDB/databases"
 	"github.com/mahdirezaie336/IMDB/model"
@@ -32,7 +33,6 @@ func (h *Handler) MainPage(c echo.Context) error {
 
 func (h *Handler) GetComments(c echo.Context) error {
 	movieId := c.QueryParam("movie")
-
 	rows, err := h.db.Mariadb.Query("select id, name, description, rating from movies where id = ? and "+
 		"deleted_at is null", movieId)
 	if err != nil {
@@ -44,12 +44,12 @@ func (h *Handler) GetComments(c echo.Context) error {
 	}
 
 	movie := model.Movie{}
-	err = rows.Scan(&movie.Id, &movie.Name, &movie.Description, &movie.Rating)
+	err = rows.Scan(&(movie.Id), &(movie.Name), &(movie.Description), &(movie.Rating))
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, makeResponse("server-error"))
 	}
 
-	var comments []model.Comment
+	allComments := make([]model.Comment, 0)
 	rows, err = h.db.Mariadb.Query("select c.id, c.comment, u.username from comments as c join users as u on "+
 		"c.userID = u.id where movieID = ? and c.approved is true", movieId)
 	if err != nil {
@@ -57,13 +57,14 @@ func (h *Handler) GetComments(c echo.Context) error {
 	}
 	for rows.Next() {
 		comment := model.Comment{}
-		if err := rows.Scan(&comment.Id, &comment.CommentBody, &comment.User); err != nil {
+		err := rows.Scan(&(comment.Id), &(comment.CommentBody), &(comment.User))
+		if err != nil {
 			return c.JSON(http.StatusInternalServerError, makeResponse("server-error"))
 		}
-		comments = append(comments, comment)
+		allComments = append(allComments, comment)
 	}
 
-	marshalled, err := json.Marshal(comments)
+	marshalled, err := json.Marshal(allComments)
 	return c.JSON(http.StatusOK, map[string]string{
 		"movie":    "" + movieId,
 		"comments": string(marshalled),
@@ -71,7 +72,26 @@ func (h *Handler) GetComments(c echo.Context) error {
 }
 
 func (h *Handler) GetMovies(c echo.Context) error {
-	return nil
+	allMovies := make([]model.Movie, 0)
+	rows, err := h.db.Mariadb.Query("select id, name, description, rating from movies where deleted_at is null")
+	if err != nil {
+		fmt.Println(err)
+		return c.JSON(http.StatusInternalServerError, makeResponse("server-error"))
+	}
+
+	for rows.Next() {
+		movie := model.Movie{}
+		err := rows.Scan(&(movie.Id), &(movie.Name), &(movie.Description), &(movie.Rating))
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, makeResponse("server-error"))
+		}
+		allMovies = append(allMovies, movie)
+	}
+
+	marshalled, err := json.Marshal(allMovies)
+	return c.JSON(http.StatusOK, map[string]string{
+		"movies": string(marshalled),
+	})
 }
 
 func (h *Handler) GetAMovie(c echo.Context) error {
