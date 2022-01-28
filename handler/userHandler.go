@@ -29,7 +29,7 @@ func (h *Handler) Vote(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, makeResponse("server-error"))
 	}
 
-	return c.JSON(http.StatusOK, makeResponse("ok"))
+	return c.String(204, "")
 }
 
 func (h *Handler) Comment(c echo.Context) error {
@@ -57,5 +57,5 @@ func (h *Handler) Comment(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, makeResponse("server-error"))
 	}
 
-	return c.JSON(http.StatusOK, makeResponse("ok"))
+	return c.String(204, "")
 }

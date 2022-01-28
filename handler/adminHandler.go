@@ -22,7 +22,7 @@ func (h *Handler) PostMovie(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, makeResponse("server-error"))
 	}
 
-	return c.JSON(http.StatusOK, makeResponse("ok"))
+	return c.String(204, "")
 }
 
 func (h *Handler) UpdateMovie(c echo.Context) error {
@@ -51,7 +51,7 @@ func (h *Handler) UpdateMovie(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, makeResponse("server-error"))
 	}
 
-	return c.JSON(http.StatusOK, makeResponse("ok"))
+	return c.String(204, "")
 }
 
 func (h *Handler) DeleteMovie(c echo.Context) error {
@@ -70,7 +70,7 @@ func (h *Handler) DeleteMovie(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, makeResponse("server-error"))
 	}
 
-	return c.JSON(http.StatusOK, makeResponse("ok"))
+	return c.String(204, "")
 }
 
 func (h *Handler) UpdateComment(c echo.Context) error {
@@ -95,7 +95,7 @@ func (h *Handler) UpdateComment(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, makeResponse("server-error"))
 	}
 
-	return c.JSON(http.StatusOK, makeResponse("ok"))
+	return c.String(204, "")
 }
 
 func (h *Handler) DeleteComment(c echo.Context) error {
@@ -114,5 +114,5 @@ func (h *Handler) DeleteComment(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, makeResponse("server-error"))
 	}
 
-	return c.JSON(http.StatusOK, makeResponse("ok"))
+	return c.String(204, "")
 }
