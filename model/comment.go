@@ -7,7 +7,7 @@ import (
 
 type Comment struct {
 	Id          int64     `json:"id"`
-	User        User      `json:"user"`
+	User        string    `json:"user"`
 	Comment     string    `json:"comment"`
 	Approved    bool      `json:"approved"`
 	CreatedAt   time.Time `json:"created_at"`
