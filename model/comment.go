@@ -6,12 +6,13 @@ import (
 )
 
 type Comment struct {
-	Id        int64     `json:"id"`
-	User      User      `json:"user"`
-	Comment   string    `json:"comment"`
-	Approved  bool      `json:"approved"`
-	CreatedAt time.Time `json:"created_at"`
-	MovieID   int       `json:"movie_id"`
+	Id          int64     `json:"id"`
+	User        User      `json:"user"`
+	Comment     string    `json:"comment"`
+	Approved    bool      `json:"approved"`
+	CreatedAt   time.Time `json:"created_at"`
+	MovieID     int       `json:"movie_id"`
+	CommentBody string    `json:"comment_body"`
 }
 
 func (c *Comment) String() string {
